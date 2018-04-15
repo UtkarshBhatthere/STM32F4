@@ -1,4 +1,3 @@
-#if 0
 #include "STM32F4_GPIO.h"
 
 
@@ -48,5 +47,3 @@ void toggle(GPIO_TypeDef GPIOx,uint8_t pin){
 		GpioWritePin(GPIOG, 13, 1);
 	}
 }
-
-#endif

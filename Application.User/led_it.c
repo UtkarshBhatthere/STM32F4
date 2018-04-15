@@ -1,4 +1,3 @@
-#if 0
 #include "STM32F4_GPIO.h"
 
 
@@ -63,4 +62,3 @@ void EXTI0_IRQHandler(void){
 		toggle(*GPIOG, 13);
 		ClearPendingInterrupt(13);
 }
-#endif
