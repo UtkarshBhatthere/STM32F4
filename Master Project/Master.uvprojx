@@ -446,6 +446,11 @@
               <FileType>1</FileType>
               <FilePath>..\STM32F4 Peripherals\Src\STM32F4_SPI.c</FilePath>
             </File>
+            <File>
+              <FileName>STM32F4_I2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\STM32F4_I2C.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -514,6 +519,13 @@
               </Aads>
             </GroupArmAds>
           </GroupOption>
+          <Files>
+            <File>
+              <FileName>I2C Master.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Application.User\I2C Master.c</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>::CMSIS</GroupName>

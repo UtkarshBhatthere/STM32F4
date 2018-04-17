@@ -4,9 +4,16 @@
 // Device Specific Header File inclusion.
 #include "stm32f429xx.h"					//Device Header
 
-typedef unsigned          char uint8_t;
-typedef unsigned short     int uint16_t;
-typedef unsigned           int uint32_t;
+/*******************************************************************
+ **	I2C Driver																										 *
+ ** @author : UTKARSH BHATT																				 *
+ ** @date		: 17-04-2018																					 *
+ ** @comment: Have Fun!																						 *
+ *******************************************************************/
+
+	typedef unsigned          char uint8_t;
+	typedef unsigned short     int uint16_t;
+	typedef unsigned           int uint32_t;
 
 
 /************************************************ I2C Library Macros ***********************************************************************/
@@ -127,14 +134,24 @@ typedef struct{
 	uint32_t DualAddressMode;										// Whether or not two own addresses are to be used.
 	uint32_t OwnAddress2;												// Configure second own address.
 	uint32_t GeneralCallMode;										// Specify if general calls on address 0 are legal.
-	uint32_t NostretchMode;											// Specify if slave can stretch clock low if need be.
+	uint32_t NoStretchMode;											// Specify if slave can stretch clock low if need be.
 	uint32_t ackEnable;													// Handles ACK enable/disable.
 }I2C_ConfTypeDef;
+
+typedef enum{
+	I2C_ERROR_NONE																			= (uint32_t)0x00, // No Error
+	I2C_ERROR_BERR																			= (uint32_t)0x01, // BERR Error
+	I2C_ERROR_ARLO																			= (uint32_t)0x02, // ARLO Error
+	I2C_ERROR_AF																				= (uint32_t)0x03, // AF Error
+	I2C_ERROR_OVR																				= (uint32_t)0x04, // OVR Error
+	I2C_ERROR_DMA																				= (uint32_t)0x05, // DMA Transfer Error
+	I2C_ERROR_TIMEOUT																		= (uint32_t)0x06  // Timeout Error
+} I2C_ERROR;
 
 
 typedef struct{
 	I2C_TypeDef			*I2Cx;
-	I2C_ConfTypeDef SPIConf;
+	I2C_ConfTypeDef*I2CConf;
 	uint8_t					*Buffer;
 	uint32_t				counter;
 	uint32_t				size;
@@ -148,5 +165,62 @@ typedef enum{
 	RESET  =!SET
 }bitStatus;
 
+/**************************************************************************************************/
+/*																						APIs																								*/
+/**************************************************************************************************/
+
+ /* Initialisation Function.																																			*/
+ /** @brief : The function initialises the I2C peripheral according to the passed in peimeter.		*/
+ /** @param : *Tasker (aka the I2C_Handler) is the structure which contains the Peripheral,   		*/
+ /**					Configuration, Buffers and other perimeters required for the communication					*/
+void I2CInit(I2C_Handler *Tasker);
+
+ /* Master Transfer Function Function.																														*/
+ /** @brief : The function transmits the passed ins *string through the I2C peripheral						*/
+ /**					configured according to the I2C_Handler.																						*/
+ /** @param : *Tasker (aka the I2C_Handler) - is the structure which contains the Peripheral, 		*/
+ /**					Configuration, Buffers and other perimeters required for the communication*/
+ /** @param : *string - Contains the string to be transmitted through the master.									*/
+ /** @param : size - Carries the size of the strig for transmission.															*/
+void I2CMasterTransmit(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+
+  /* Master Receive Function Function.																														*/
+ /** @brief : The function receives the passed ins *string through the I2C peripheral							*/
+ /**					configured according to the I2C_Handler.																						*/
+ /** @param : *Tasker (aka the I2C_Handler) - is the structure which contains the Peripheral, 		*/
+ /**					Configuration, Buffers and other perimeters required for the communication*/
+ /** @param : *string - Contains the string to be received through the master.										*/
+ /** @param : size - Carries the size of the strig for reception.																	*/
+void I2CMasterReceive(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+
+ /* Slave Transfer Function.																													*/
+ /** @brief : The function transmits the passed ins *string through the I2C peripheral						*/
+ /**					configured according to the I2C_Handler.																						*/
+ /** @param : *Tasker (aka the I2C_Handler) - is the structure which contains the Peripheral, 		*/
+ /**					Configuration, Buffers and other perimeters required for the communication*/
+ /** @param : *string - Contains the string to be transferred through the master.									*/
+ /** @param : size - Carries the size of the strig for transfer.																	*/
+void I2CSlaveTransmit(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+
+  /* Slave Receive Function.																																			*/
+ /** @brief : The function receives the passed ins *string through the I2C peripheral							*/
+ /**					configured according to the I2C_Handler.																						*/
+ /** @param : *Tasker (aka the I2C_Handler) - is the structure which contains the Peripheral, 		*/
+ /**					Configuration, Buffers and other perimeters required for the communication*/
+ /** @param : *string - Contains the string to be received through the master.										*/
+ /** @param : size - Carries the size of the strig for reception.																	*/
+void I2CSlaveReceive(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+
+ /* I2C Event Interrupt Handler																																		*/
+ /** @brief : This handles the inerrupt triger and control for I2C configured by SP_Handler				*/
+ /** @param : *Tasker - The I2C handler passes in all the requierd configurational infomation			*/
+ /**						to the Interrrupt Handler.																												*/
+void I2CEventInterruptHandler(I2C_Handler *Tasker);
+
+ /* I2C Error Interrupt Handler																																		*/
+ /** @brief : This handles the error inerrupt triger and control for I2C configured by SP_Handler	*/
+ /** @param : *Tasker - The I2C handler passes in all the requierd configurational infomation			*/
+ /**						to the Interrrupt Handler.																												*/
+void I2CErrorInterruptHandler(I2C_Handler *Tasker);
 
 #endif  
