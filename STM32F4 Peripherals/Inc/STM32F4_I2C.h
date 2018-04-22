@@ -18,6 +18,11 @@
 
 /************************************************ I2C Library Macros ***********************************************************************/
 
+/******* I2C Enable Macros *******/
+#define I2C1_Enable																		((uint32_t) 0x0001 << 21)
+#define I2C2_Enable																		((uint32_t) 0x0001 << 22)
+#define I2C3_Enable																		((uint32_t) 0x0001 << 23)
+
 /******* I2C CR1 Bit definition *******/
 
 #define I2C_CR1_Peripheral_Enable											((uint16_t) 0x0001 << 0)
@@ -34,7 +39,7 @@
 
 #define I2C_CR1_ACK_Enable														((uint16_t) 0x0001 << 10)
 
-#define I2C_CR1_PEC_Next															((uint16_t) 0x0001 << 11)
+#define I2C_CR1_POS_Enable														((uint16_t) 0x0001 << 11)
 
 #define I2C_CR1_PEC_Transferred												((uint16_t) 0x0001 << 12)
 
@@ -55,7 +60,7 @@
 /******* I2C Own Address register 1 Bit definition *******/
 
 #define I2C_OAR1_10BIT_ADDR														((uint16_t) 0x0001 << 15)
-#define I2C_OAR1_7BIT_ADDR															~I2C_OAR_10BIT_ADDR
+#define I2C_OAR1_7BIT_ADDR															~I2C_OAR1_10BIT_ADDR
 
 /******* I2C Own Address register 2, Bit definition *******/
 
@@ -65,8 +70,7 @@
 
 #define I2C_FLAGS_Start_Generated											((uint16_t) 0x0001 << 0)
 
-#define I2C_FLAGS_Master_Address_Sent									((uint16_t) 0x0001 << 1)
-#define I2C_FLAGS_Slave_Address_Received							((uint16_t) 0x0001 << 1)
+#define I2C_FLAGS_ADDR_Set														((uint16_t) 0x0001 << 1)
 
 #define I2C_FLAGS_Byte_Transfer_Done									((uint16_t) 0x0001 << 2)
 
@@ -127,12 +131,12 @@ typedef enum{
 } I2C_State;
 
 typedef struct{
-	uint32_t ClockSpeed;												// Whether to use FM or SM.
+	uint32_t SpeedMode;													// Whether to use FM or SM.
 	uint32_t DutyCycle;													// The ON and OFF positions can have different time durations in FM, use this to configure the duty cycle.
 	uint32_t OwnAddress1;												// Specifies the first own address of the device.
 	uint32_t AddressingMode;										// Whether to use 7-Bit or 10-Bit Addressing.
-	uint32_t DualAddressMode;										// Whether or not two own addresses are to be used.
-	uint32_t OwnAddress2;												// Configure second own address.
+//	uint32_t DualAddressMode;										// Whether or not two own addresses are to be used.
+//	uint32_t OwnAddress2;												// Configure second own address.
 	uint32_t GeneralCallMode;										// Specify if general calls on address 0 are legal.
 	uint32_t NoStretchMode;											// Specify if slave can stretch clock low if need be.
 	uint32_t ackEnable;													// Handles ACK enable/disable.
@@ -148,15 +152,14 @@ typedef enum{
 	I2C_ERROR_TIMEOUT																		= (uint32_t)0x06  // Timeout Error
 } I2C_ERROR;
 
-
 typedef struct{
-	I2C_TypeDef			*I2Cx;
-	I2C_ConfTypeDef*I2CConf;
-	uint8_t					*Buffer;
-	uint32_t				counter;
-	uint32_t				size;
-	I2C_State				state;
-	uint32_t				ErrorCode;
+	I2C_TypeDef				*I2Cx;
+	I2C_ConfTypeDef		*I2CConf;
+	uint8_t						*Buffer;
+	uint32_t					counter;
+	uint32_t					size;
+	I2C_State					state;
+	uint32_t					ErrorCode;
 	
 }I2C_Handler;
 
@@ -182,7 +185,7 @@ void I2CInit(I2C_Handler *Tasker);
  /**					Configuration, Buffers and other perimeters required for the communication*/
  /** @param : *string - Contains the string to be transmitted through the master.									*/
  /** @param : size - Carries the size of the strig for transmission.															*/
-void I2CMasterTransmit(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+void I2CMasterTransmit(I2C_Handler *Tasker, uint8_t SlaveAddress, uint8_t *string, uint8_t size);
 
   /* Master Receive Function Function.																														*/
  /** @brief : The function receives the passed ins *string through the I2C peripheral							*/
@@ -191,7 +194,7 @@ void I2CMasterTransmit(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
  /**					Configuration, Buffers and other perimeters required for the communication*/
  /** @param : *string - Contains the string to be received through the master.										*/
  /** @param : size - Carries the size of the strig for reception.																	*/
-void I2CMasterReceive(I2C_Handler *Tasker, uint8_t *string, uint8_t size);
+void I2CMasterReceive(I2C_Handler *Tasker, uint8_t SlaveAddress, uint8_t *string, uint8_t size);
 
  /* Slave Transfer Function.																													*/
  /** @brief : The function transmits the passed ins *string through the I2C peripheral						*/
@@ -222,5 +225,6 @@ void I2CEventInterruptHandler(I2C_Handler *Tasker);
  /** @param : *Tasker - The I2C handler passes in all the requierd configurational infomation			*/
  /**						to the Interrrupt Handler.																												*/
 void I2CErrorInterruptHandler(I2C_Handler *Tasker);
+
 
 #endif  
