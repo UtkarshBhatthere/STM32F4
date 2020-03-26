@@ -1,11 +1,17 @@
 # STM32F4
 
-This repository is a Library collection being developed for STM32F4 based Arm Development Boards.
+This repository is a Library collection being developed for STM32F4 based Boards.
 
-The Projects are developed on **STM32F429 Discovery** Board but the Libraries are usable accross other STM32F4 mcus as well.
+The library is tested on **STM32F429 Discovery** Board but are usable on other boards using STM32F4 mcus as well.
 
-The Library's Inc as well as Src files will be in
+Header Files are available in:
+
 ```Markdown
-	STM32F4\STM32F4 Peripherals
+Inc/
 ```
 
+and Source Files are available in:
+
+```Markdown
+Src/
+```
